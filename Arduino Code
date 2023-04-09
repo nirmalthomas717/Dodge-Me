@@ -1,0 +1,85 @@
+//Face Tracker using OpenCV and Arduino
+
+#include<Servo.h>
+
+Servo x, y, z;
+int width = 640, height = 480;  // total resolution of the video
+int motorPin =12;
+int xpos = 80, ypos = 60, zpos = 125;  // initial positions of both Servos
+void setup() {
+
+  pinMode(motorPin, OUTPUT);
+  Serial.begin(9600);
+  x.attach(9);
+  y.attach(10);
+  z.attach(6);
+
+  // Serial.print(width);
+  //Serial.print("\t");
+  //Serial.println(height);
+  x.write(xpos);
+  y.write(ypos);
+  z.write(zpos);
+}
+const int angle = 2;   // degree of increment or decrement
+
+void Trigger ()
+{   
+    digitalWrite(motorPin, HIGH);
+    delay(350);               
+    zpos = 50;
+    z.write(zpos);              // tell servo to go to position in variable 'pos'
+    delay(15);                       // waits 15 ms for the servo to reach the position
+    zpos = 125;
+    z.write(zpos);              // tell servo to go to position in variable 'pos'
+    delay(100);                       // waits 15 ms for the servo to reach the position
+    digitalWrite(motorPin, LOW);
+    return;   
+}
+
+void loop() {
+  if (Serial.available() > 0)
+  {
+    int x_mid, y_mid;
+    if (Serial.read() == 'X')
+    {
+      x_mid = Serial.parseInt();  // read center x-coordinate
+      if (Serial.read() == 'Y')
+        y_mid = Serial.parseInt(); // read center y-coordinate
+    }
+    /* adjust the servo within the squared region if the coordinates
+        is outside it
+    */
+    if (x_mid > width / 2 + 30)
+      xpos += (x_mid -(width/2))/25;
+    if (x_mid < width / 2 - 30)
+      xpos += (x_mid -(width/2))/25;
+    if (y_mid < height / 2 + 30)
+      ypos -= (y_mid -(height/2))/25;
+    if (y_mid > height / 2 - 30)
+      ypos -= (y_mid -(height/2))/25;
+
+    if((abs(x_mid - (width / 2)) <  30 )&&(abs(y_mid - (height / 2)) <  30 )) 
+        Trigger();
+        
+       
+    // if the servo degree is outside its range
+    if (xpos >= 160)
+      xpos = 80;
+    else if (xpos <= 0)
+      xpos = 0;
+    if (ypos >= 160)
+      ypos = 60;
+    else if (ypos <= 0)
+      ypos = 0;
+
+    x.write(xpos);
+    y.write(ypos);
+
+    // used for testing
+    //Serial.print("\t");
+    // Serial.print(x_mid);
+    // Serial.print("\t");
+    // Serial.println(y_mid);
+  }
+}

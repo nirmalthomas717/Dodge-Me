@@ -1,6 +1,5 @@
 # Dodge-Me
-// An Automated Nerf Turret that can track human faces and orient itself to shoot at them, 
-// creating a new Human-Toy Interaction that can stimulate reflex responses from the user. 
+// An Automated Nerf Turret that can track human faces and orient itself to shoot at them, creating a new Human-Toy Interaction that can stimulate reflex responses from the user. 
 // Combining computer vision &amp; physical computing to explore novel ideas of entertainment!
 
 // The codes given are divided into 2 parts. One for the arudino which will be running on the arduino and 
